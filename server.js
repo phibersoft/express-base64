@@ -16,6 +16,17 @@ const setup = async () => {
   }
 };
 
+const slugify = (text) => {
+  return text
+    .toString()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, "-and-")
+    .replace(/[\s\W-]+/g, "-");
+};
+
 setup();
 
 app.post("/", async (req, res) => {
@@ -23,8 +34,6 @@ app.post("/", async (req, res) => {
     if (!req.body) {
       return res.status(400).send("No image provided");
     }
-
-    console.log(req);
 
     const matches = req.body.match(/^data:(image\/[a-zA-Z]+);base64,(.+)$/);
 
@@ -40,7 +49,7 @@ app.post("/", async (req, res) => {
     let filename;
 
     if (req.headers["x-filename"]) {
-      filename = `${req.headers["x-filename"]}.${extension}`;
+      filename = `${slugify(req.headers["x-filename"])}.${extension}`;
     } else {
       filename = `image_${Date.now()}.${extension}`;
     }
