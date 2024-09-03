@@ -36,7 +36,14 @@ app.post("/", async (req, res) => {
     const imageData = matches[2];
 
     const extension = mimeType.split("/")[1];
-    const filename = `image_${Date.now()}.${extension}`;
+
+    let filename;
+
+    if (req.headers["x-filename"]) {
+      filename = `${req.headers["x-filename"]}.${extension}`;
+    } else {
+      filename = `image_${Date.now()}.${extension}`;
+    }
     const filepath = path.join(uploadsDir, filename);
 
     await fs.writeFile(filepath, imageData, "base64");
