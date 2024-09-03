@@ -56,6 +56,8 @@ app.post("/", async (req, res) => {
     const filepath = path.join(uploadsDir, filename);
 
     await fs.writeFile(filepath, imageData, "base64");
+    console.log(`Image saved: ${filename}`);
+    res.send(`Image saved: ${filename}`);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
